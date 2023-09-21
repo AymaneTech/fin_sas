@@ -27,19 +27,15 @@ int statut_num;
 int task_num;
 int sorting_choice;
 int id_searching;
-<<<<<<< HEAD
-char title_searching[50 ];
 int searching_type;
-=======
-char title_searching;
+char title_searching[50];
 int id_updating;
->>>>>>> eee360d28fb6303cf54dcf98155d5132411b516a
+int nbr_incomplet = 0;
 
 // cette fonction ajouter une nouveau tache a le tableau
 void add_task()
 {
-    total++;
-    t[total].id = total;
+    t[total].id = total + 1;
     printf("\tPour ajouter une nouveau tache merci de remplir ces informations :\n");
 
     printf("Saisir le titre de tache :\n");
@@ -73,6 +69,7 @@ void add_task()
     }
     printf("Saisir le temps de fin de cette tache sous cette forme (jour/mois/annee):  ");
     scanf("%d/%d/%d", &t[total].deadline.day, &t[total].deadline.month, &t[total].deadline.year);
+    total++;
 }
 
 // precision de combien de tache va ajouter
@@ -92,16 +89,22 @@ void id_sorting()
 {
 
     // Affichage de la liste de tâches triée
-    printf("+----+-----------------+----------------------+--------------+-------------+\n");
-    printf("| ID |    Nom de la tâche   |    Description    |  Date d'échéance |    Statut   |\n");
-    printf("+----+-----------------+----------------------+--------------+-------------+\n");
-
-    for (int i = 1; i <= total; i++)
+    if (total != 0)
     {
-        printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
-    }
+        printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+        printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
-    printf("+----+-----------------+----------------------+--------------+-------------+\n");
+        for (int i = 0; i < total; i++)
+        {
+            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        }
+    }
+    else
+    {
+        printf("le tableau de tach est vide !!  \n");
+    }
 }
 
 // la fonction de triage par alphabet
@@ -122,19 +125,25 @@ void alpha_sorting()
             }
         }
     }
-    // Affichage de la liste de tâches triée
-    printf("+----+-----------------+----------------------+--------------+-------------+\n");
-    printf("| ID |    Nom de la tâche   |    Description    |  Date d'échéance |    Statut   |\n");
-    printf("+----+-----------------+----------------------+--------------+-------------+\n");
-
-    for (int j = 1; j <= total; j++)
+    if (total != 0)
     {
-        printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[j].id, t[j].title, t[j].description, t[j].deadline.year, t[j].deadline.month, t[j].deadline.day, t[j].statut);
+        // Affichage de la liste de tâches triée
+        printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+        printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+
+        for (int j = 0; j <= total; j++)
+        {
+            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[j].id, t[j].title, t[j].description, t[j].deadline.year, t[j].deadline.month, t[j].deadline.day, t[j].statut);
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        }
+        printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
     }
-
-    printf("+----+-----------------+----------------------+--------------+-------------+\n");
+    else
+    {
+        printf("le tableau de tache est vide !!  \n");
+    }
 }
-
 // function to choose how it will display (sorting)
 void sorting()
 {
@@ -157,7 +166,6 @@ void sorting()
         break;
     default:
         printf("Valeur Invalide\n");
-        printf("\e[1;1H\e[2J");
         break;
     }
 }
@@ -173,12 +181,12 @@ void searching_id()
         if (id_searching == t[i].id)
         {
             printf("la tache vous chercher sur est existe : \n");
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
-            printf("| ID |    Nom de la tâche   |    Description    |  Date d'échéance |    Statut   |\n");
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+            printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
-            printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
+            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
             break;
         }
         else
@@ -198,14 +206,6 @@ void searching_title()
         if (strcmp(title_searching, t[i].title) == 0)
         {
             printf("%s", title_searching);
-            // printf("la tache vous chercher sur est existe : \n");
-            // printf("+----+-----------------+----------------------+--------------+-------------+\n");
-            // printf("| ID |    Nom de la tâche   |    Description    |  Date d'échéance |    Statut   |\n");
-            // printf("+----+-----------------+----------------------+--------------+-------------+\n");
-
-            // printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
-            // printf("+----+-----------------+----------------------+--------------+-------------+\n");
-            // break;
         }
         else if (strcmp(title_searching, t[i].title) != 0)
         {
@@ -222,12 +222,12 @@ void updating_task()
         if (id_searching == t[i].id)
         {
             // Affichage de la liste de tâches triée
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
-            printf("| ID |    Nom de la tâche   |    Description    |  Date d'échéance |    Statut   |\n");
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+            printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
-            printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
+            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
             printf("\tPour modifier une tache merci de remplir ces informations :\n");
 
@@ -271,6 +271,17 @@ void updating_task()
     }
 }
 
+void count_status()
+{
+    for (int i = 0; i <= total; i++)
+    {
+        if (t[i].statut == "a realiser" && t[i].statut == "en cours de realisation")
+        {
+            nbr_incomplet++;
+        }
+    }
+}
+
 // static function
 void static_func()
 {
@@ -282,17 +293,22 @@ void static_func()
     switch (choice)
     {
     case 1:
-        printf("\t le total de taches est : %d", total);
+        printf("\t le nombre total des taches est : %d", total);
         printf("\n\t[1] Afficher le nombre total des tâches.\n");
         break;
-    
+    case 2:
+        printf("\tle nombre des taches incomples est : \t%d ", nbr_incomplet);
+        printf("le nombre des taches complets est : \t%d", (total - nbr_incomplet));
+        break;
     default:
+        printf("valeur invalide !!! \n");
         break;
     }
 }
 
 // searching menu
-void searching_menu (){
+void searching_menu()
+{
     printf("\t[1] Rechercher  par ID : \n");
     printf("\t[2] Rechercher  par Deadline :\n");
     printf("Entrez votre choix :: ");
@@ -308,8 +324,45 @@ void searching_menu (){
         break;
     default:
         printf("Ce choix n'existe pas\n");
-        printf("\e[1;1H\e[2J");
         break;
+    }
+}
+
+// delete tasks
+void delete_task()
+{
+    int p, q, id;
+    char verifier;
+    printf("Saisir le ID de tache a supprimer : ");
+    scanf("%d", &id);
+
+    printf("Confirmez avec (y / n): \n");
+    scanf("%c", &verifier);
+    if (verifier == 'y')
+    {
+        for (p = 0; p < total; p++)
+        {
+            if (t[p].id == id)
+            {
+                printf("FOUND\n");
+                for (q = p; q < total - 1; q++)
+                {
+                    t[p] = t[q + 1];
+                    p++;
+                }
+                total--;
+
+                printf("\tTache supprime !!! \n\n");
+            }
+        }
+    }
+    else if (verifier == 'n')
+    {
+        printf("\t\t\toperation annulee !!!\n\n");
+    }
+    else
+    {
+        printf("\t\t\tvaleur invalide \n");
     }
 }
 
@@ -318,15 +371,15 @@ int main()
     // this is the main menu
     do
     {
-        printf("\e[1;1H\e[2J");
         printf("\t\t\t\t Bienvenue a To do List \t\t\t\n");
         printf("\t=======================================================\n");
         printf("\t|[1] Ajouter une tache :\n");
         printf("\t|[2] Afficher tous les taches : \n");
         printf("\t|[3] Rechercher sur une tache \n");
         printf("\t|[4] Modifier une tache :\n");
-        printf("\t|[5] afficher les informations : \n");
-        printf("\t|[0 ] Quit\n");
+        printf("\t|[5] afficher les informations statique : \n");
+        printf("\t|[6] Supprimer une tache\n");
+        printf("\t|[0] Quit\n");
         printf("\t=======================================================\n");
 
         printf("Entrez votre choix : ");
@@ -349,6 +402,10 @@ int main()
             break;
         case 5:
             static_func();
+            break;
+        case 6:
+            delete_task();
+            system("pause");
             break;
         default:
             printf("Invalid choice. Please try again.\n");
