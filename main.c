@@ -27,7 +27,8 @@ int statut_num;
 int task_num;
 int sorting_choice;
 int id_searching;
-char title_searching;
+char title_searching[50 ];
+int searching_type;
 
 // cette fonction ajouter une nouveau tache a le tableau
 void add_task()
@@ -156,7 +157,7 @@ void sorting()
     }
 }
 
-// modification
+// searching
 void searching_id()
 {
     printf("Entrez le ID pour rechercher : \t");
@@ -188,14 +189,15 @@ void searching_title(){
     {
         if (strcmp(title_searching, t[i].title) == 0)
         {
-            printf("la tache vous chercher sur est existe : \n");
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
-            printf("| ID |    Nom de la tâche   |    Description    |  Date d'échéance |    Statut   |\n");
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
+            printf("%s", title_searching);
+            // printf("la tache vous chercher sur est existe : \n");
+            // printf("+----+-----------------+----------------------+--------------+-------------+\n");
+            // printf("| ID |    Nom de la tâche   |    Description    |  Date d'échéance |    Statut   |\n");
+            // printf("+----+-----------------+----------------------+--------------+-------------+\n");
 
-            printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
-            printf("+----+-----------------+----------------------+--------------+-------------+\n");
-            break;
+            // printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
+            // printf("+----+-----------------+----------------------+--------------+-------------+\n");
+            // break;
         }
         else if (strcmp(title_searching, t[i].title) != 0){
             printf("Ce ID n'existe pas \n");
@@ -204,12 +206,34 @@ void searching_title(){
     }
 }
 
+// searching menu
+void searching_menu (){
+    printf("\t[1] Rechercher  par ID : \n");
+    printf("\t[2] Rechercher  par Deadline :\n");
+    printf("Entrez votre choix :: ");
+    scanf("%d", &searching_type);
+
+    switch (searching_type)
+    {
+    case 1:
+        searching_id();
+        break;
+    case 2:
+        searching_title();
+        break;
+    default:
+        printf("Ce choix n'existe pas\n");
+        printf("\e[1;1H\e[2J");
+        break;
+    }
+}
+
 int main()
 {
     // this is the main menu
     do
     {
-
+        printf("\e[1;1H\e[2J");
         printf("\t\t\t\t Bienvenue a To do List \t\t\t\n");
         printf("\t=======================================================\n");
         printf("\t|[1] Ajouter une tache :\n");
@@ -233,7 +257,7 @@ int main()
             sorting();
             break;
         case 3:
-            searching_id();
+            searching_menu();
             break;
         default:
             printf("Invalid choice. Please try again.\n");
