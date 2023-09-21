@@ -27,8 +27,13 @@ int statut_num;
 int task_num;
 int sorting_choice;
 int id_searching;
+<<<<<<< HEAD
 char title_searching[50 ];
 int searching_type;
+=======
+char title_searching;
+int id_updating;
+>>>>>>> eee360d28fb6303cf54dcf98155d5132411b516a
 
 // cette fonction ajouter une nouveau tache a le tableau
 void add_task()
@@ -45,7 +50,7 @@ void add_task()
     getchar();
     gets(t[total].description);
 
-    printf("[1]==> a realiser \t [2]==> en cours de realisation \t [3]==> finalise\n");
+    printf("\t[1]==> a realiser \n\t [2]==> en cours de realisation \n\t [3]==> finalise\n");
     printf("Choisissez votre choix avec numero : \n");
     scanf("%d", &statut_num);
 
@@ -175,12 +180,15 @@ void searching_id()
             printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
             printf("+----+-----------------+----------------------+--------------+-------------+\n");
             break;
-        }else {
+        }
+        else
+        {
             printf("Ce ID n'existe pas \n");
         }
     }
 }
-void searching_title(){
+void searching_title()
+{
     printf("Entrez le titre de ce tache pour rechercher : \t");
     getchar();
     gets(title_searching);
@@ -199,10 +207,87 @@ void searching_title(){
             // printf("+----+-----------------+----------------------+--------------+-------------+\n");
             // break;
         }
-        else if (strcmp(title_searching, t[i].title) != 0){
+        else if (strcmp(title_searching, t[i].title) != 0)
+        {
             printf("Ce ID n'existe pas \n");
         }
+    }
+}
+void updating_task()
+{
+    printf("\n\n Entrez l'ID de la tache a modifier: ");
+    scanf("%d", &id_updating);
+    for (int i = 0; i <= total; i++)
+    {
+        if (id_searching == t[i].id)
+        {
+            // Affichage de la liste de tâches triée
+            printf("+----+-----------------+----------------------+--------------+-------------+\n");
+            printf("| ID |    Nom de la tâche   |    Description    |  Date d'échéance |    Statut   |\n");
+            printf("+----+-----------------+----------------------+--------------+-------------+\n");
 
+            printf("| %-2d | %-19s | %-20s | %04d-%02d-%02d | %-15s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
+            printf("+----+-----------------+----------------------+--------------+-------------+\n");
+
+            printf("\tPour modifier une tache merci de remplir ces informations :\n");
+
+            printf("Saisir le nouveau titre de tache :\n");
+            getchar();
+            gets(t[i].title);
+
+            printf("Saisir le nouveau description  :\n");
+            getchar();
+            gets(t[i].description);
+
+            printf("\t[1]==> a realiser \n\t [2]==> en cours de realisation \n\t [3]==> finalise\n");
+            printf("Choisissez votre choix avec numero : \n");
+            scanf("%d", &statut_num);
+
+            //      cette condition remplit la variable statut ca depent le choix de l'utilisateur
+            if (statut_num == 1)
+            {
+                strcpy(t[i].statut, "a realiser");
+            }
+            else if (statut_num == 2)
+            {
+                strcpy(t[i].statut, "en cours de realisation");
+            }
+            else if (statut_num == 3)
+            {
+                strcpy(t[i].statut, "finalise");
+            }
+            else
+            {
+                printf("ce choix n'existe pas !!! \n");
+            }
+            printf("Saisir le temps de fin de cette tache sous cette forme (jour/mois/annee):  ");
+            scanf("%d/%d/%d", &t[i].deadline.day, &t[i].deadline.month, &t[i].deadline.year);
+            break;
+        }
+        else
+        {
+            printf("Ce ID n'existe pas \n");
+        }
+    }
+}
+
+// static function
+void static_func()
+{
+    printf("\n\t[1] Afficher le nombre total des tâches.\n");
+    printf("\n\t[1] Afficher le nombre de les taches complet et incomplet.\n");
+    printf("\nEntrez votre choix :: \n");
+    scanf("%d", &choice);
+
+    switch (choice)
+    {
+    case 1:
+        printf("\t le total de taches est : %d", total);
+        printf("\n\t[1] Afficher le nombre total des tâches.\n");
+        break;
+    
+    default:
+        break;
     }
 }
 
@@ -240,7 +325,7 @@ int main()
         printf("\t|[2] Afficher tous les taches : \n");
         printf("\t|[3] Rechercher sur une tache \n");
         printf("\t|[4] Modifier une tache :\n");
-        printf("\t|[5] Supprimer une tache : \n");
+        printf("\t|[5] afficher les informations : \n");
         printf("\t|[0 ] Quit\n");
         printf("\t=======================================================\n");
 
@@ -258,6 +343,12 @@ int main()
             break;
         case 3:
             searching_menu();
+            break;
+        case 4:
+            updating_task();
+            break;
+        case 5:
+            static_func();
             break;
         default:
             printf("Invalid choice. Please try again.\n");
