@@ -33,10 +33,11 @@ int id_updating;
 int nbr_incomplet = 0;
 
 // cette fonction ajouter une nouveau tache a le tableau
+// CLEAN 
 void add_task()
 {
     total++;
-    t[total].id = total + 1;
+    t[total].id = total;
     printf("\n\tTask N %d :\n\n", total);
 
     printf("Saisir le titre de tache :\n\t>>>>>\t");
@@ -72,7 +73,7 @@ void add_task()
     scanf("%d/%d/%d", &t[total].deadline.day, &t[total].deadline.month, &t[total].deadline.year);
 }
 
-// precision de combien de tache va ajouter
+// CLEAN ALSO
 void adding()
 {
     printf("\n\t\t\tVoullez vous ajouter combien de tache : \t");
@@ -83,7 +84,7 @@ void adding()
     }
 }
 
-// la fonction d'affichage de tous les taches
+// I CLEAN THIS ///////////////////////
 void id_sorting()
 {
     task temp;
@@ -91,7 +92,7 @@ void id_sorting()
     {
         for (int j = 1; j <= total - i; j++)
         {
-            if ((t[j].id > t[j + 1].id) > 0)
+            if (t[j].id > t[j + 1].id)
             {
                 // Swap tasks
                 temp = t[j];
@@ -100,7 +101,6 @@ void id_sorting()
             }
         }
     }
-
     // Affichage de la liste de tâches triée
         printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
         printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
@@ -117,24 +117,20 @@ void id_sorting()
 void alpha_sorting()
 {
     task temp;
-
     for (int i = 0; i < total - 1; i++)
     {
         for (int j = 0; j < total - i - 1; j++)
         {
             if (strcmp(t[j].title, t[j + 1].title) > 0)
             {
-                // Swap tasks
                 temp = t[j];
                 t[j] = t[j + 1];
                 t[j + 1] = temp;
             }
         }
     }
-    
-    // Print the sorted list of tasks
     printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
-    printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+    printf("| ID |     Nom de la tache     |          Description          |  Date d'echeance |        Statut        |\n");
     printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
     for (int j = 0; j < total; j++)
@@ -342,7 +338,9 @@ void delete_task()
 {
     int p, q, id;
     char verifier;
-    printf("Saisir le ID de tache a supprimer : ");
+
+
+    printf("Saisir le ID de tache a supprimer : "); 
     scanf("%d", &id);
 
     printf("Confirmez avec (y / n): \n");
