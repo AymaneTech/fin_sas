@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 // creation de la structure de date;
 
@@ -17,6 +18,7 @@ typedef struct
     char description[200];
     char statut[50];
     date deadline;
+    time_t creation_date;
 } task;
 
 // Decalration des variables global
@@ -77,6 +79,11 @@ void add_task()
     printf("Saisir le temps de fin de cette tache sous cette forme (jour/mois/annee):  \n\t>>>>>\t");
     scanf("%d/%d/%d", &t[total].deadline.day, &t[total].deadline.month, &t[total].deadline.year);
 
+    t[total].creation_date = time(NULL);
+
+    // char date_str[15];
+    // strftime(date_str, sizeof(date_str), "%d-%m-%y", localtime(t[total].creation_date));
+
     total++;
 }
 
@@ -113,8 +120,14 @@ void alpha_sorting()
 
     for (int i = 0; i < total; i++)
     {
-        printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
-        printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        char creationDateStr[26];
+
+        for (int i = 1; i <= total; i++)
+        {
+            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        }
+
     }
 }
 
@@ -354,19 +367,21 @@ int main()
     printf("\e[1;1H\e[2J");
 
     // this is the main menu
-    printf("\t\t\t=======================================================\n\n");
-    printf("\t\t\t\t\t Bienvenue a To do List \t\t\t\n");
+    printf("\t\t\t==========================================================\n\n");
+    printf("\t\t>>>>>>>>>>>\t Bienvenue a To do List \t<<<<<<<<<<<\t\t\n");
     do
     {
         printf("\t\t\t__________________________________________________________\n");
-        printf("\t\t\t|\t[1] Ajouter une tache ou plusieurs :                  |\n");
-        printf("\t\t\t|\t[2] Voir toute les taches :                           |\n");
-        printf("\t\t\t|\t[3] Rechercher une tache                              |\n");
-        printf("\t\t\t|\t[4] Modifier une tache :                              |\n");
-        printf("\t\t\t|\t[5] Statistique de mes taches :                       |\n");
-        printf("\t\t\t|\t[6] Supprimer une tache                               |\n");
+        printf("\t\t\t|\t[1] Add a task or more                  |\n");
+        printf("\t\t\t|\t[2] Display a task                      |\n");
+        printf("\t\t\t|\t[3] Display all tasks                              |\n");
+        printf("\t\t\t|\t[4] Search for a task                              |\n");
+        printf("\t\t\t|\t[5] Display statistics                       |\n");
+        printf("\t\t\t|\t[6] Delete a task                               |\n");
         printf("\t\t\t|\t[0] Quit                                              |\n");
         printf("\t\t\t___________________________________________________________\n\n");
+
+        // printf("%d-%")
 
         printf("Entrez votre choix : ");
         scanf("%d", &choice);
