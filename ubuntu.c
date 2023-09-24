@@ -2,7 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-
+typedef struct
+{
+    int id, nbrj;
+} JourRest;
 // timt_t now = time_t(NULL);
 
 // struct tm *current_time = localtime(&now);
@@ -44,7 +47,7 @@ int nbr_incomplet = 0;
 
 // CLEAN
 // add a new task
-void add_task()
+void addTask()
 {
     t[total].id = total + 1;
     printf("\e[1;1H\e[2J");
@@ -94,18 +97,18 @@ void add_task()
 
 // CLEAN ALSO
 
-void adding()
+void addMultipleTasks()
 {
     printf("\tHow many tasks you want add : \t");
     scanf("%d", &task_num);
     for (int i = 1; i <= task_num; i++)
     {
-        add_task();
+        addTask();
     }
 }
 
 // I CLEAN THIS
-void id_sorting()
+void sortTasksByID()
 {
     // Affichage de la te de tâches triée
     printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
@@ -120,7 +123,7 @@ void id_sorting()
 }
 
 // la fonction de triage par alphabet
-void alpha_sorting()
+void sortTasksAlphabetically()
 {
     task temp;
 
@@ -162,13 +165,13 @@ void sorting()
         switch (sorting_choice)
         {
         case 1:
-            alpha_sorting();
+            sortTasksAlphabetically();
             break;
         case 2:
-            id_sorting();
+            sortTasksByID();
             break;
         case 3:
-            // deadline_sorting();
+            // remaining_sort();
             break;
         default:
             printf("Invalid choice, Try again !!!\n");
@@ -207,20 +210,22 @@ void searching_id()
 }
 void searching_title()
 {
+    int checker = 0;
     printf("Please enter task title to search : \t");
     getchar();
     gets(title_searching);
 
-    for (int i = 0; i <= total; i++)
+    for (int i = 0; i < total; i++)
     {
         if (strcmp(title_searching, t[i].title) == 0)
         {
-            printf("%s", title_searching);
+            checker = 1;
+            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
         }
-        else if (strcmp(title_searching, t[i].title) != 0)
-        {
-            printf("ID don't exist !!! \n");
-        }
+    }
+    if (checker == 0)
+    {
+        printf("No tasks with this title were found.\n");
     }
 }
 void updating_task()
@@ -286,7 +291,7 @@ void count_status()
 {
     for (int i = 0; i <= total; i++)
     {
-        if (t[i].statut == "'To Do'" && t[i].statut == "'Doing'")
+        if (t[i].statut == "'To Do'" || t[i].statut == "'Doing'")
         {
             nbr_incomplet++;
         }
@@ -394,9 +399,8 @@ here:
     }
 }
 
-void deadline_sorting()
+void remaining_sort()
 {
-
     time_t currentTime;
     struct tm *localTimeInfo;
     currentTime = time(NULL);
@@ -421,9 +425,71 @@ void deadline_sorting()
         }
     }
 }
+
+void deadline_sorting()
+{
+    task temp;
+    for (int i = 0; i < total - 1; i++)
+    {
+        for (int j = 0; j < i - 1; j++)
+        {
+            if (t[j].deadline.year > t[j + 1].deadline.year)
+            {
+
+                temp = t[j];
+                t[j] = t[j + 1];
+                t[j + 1] = temp;
+            }
+        }
+    }
+    printf("\t\t\t *** Table sorted by deadline **** \n");
+    printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+    printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+    printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+    for (int j = 0; j < total; j++)
+    {
+        if (t[j].deadline.year == year && t[j].deadline.month == month && (t[j].deadline.day - day) <= 3 && (t[j].deadline.day - day) >= 0)
+        {
+
+            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[j].id, t[j].title, t[j].description, t[j].deadline.year, t[j].deadline.month, t[j].deadline.day, t[j].statut);
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        }
+    }
+}
+// Afficher le nombre de jours restants jusqu'au délai de chaque tâche
+JourRest tt[100];
+void calculerNombreDeJoursRestants()
+{
+    int i;
+
+    // Obtenir la date actuelle
+    time_t now;
+    struct tm *timeinfo;
+    time(&now);
+    timeinfo = localtime(&now);
+
+    for (i = 0; i < total; i++)
+    {
+        tt[i].id = t[i].id;
+
+        // Calculer le nombre de jours restants pour la tâche actuelle
+        struct tm deadline;
+        deadline.tm_year = t[i].deadline.year - 1900;
+        deadline.tm_mon = t[i].deadline.month - 1;
+        deadline.tm_mday = t[i].deadline.day;
+        deadline.tm_hour = 0;
+        deadline.tm_min = 0;
+        deadline.tm_sec = 0;
+
+        time_t deadlineTime = mktime(&deadline);
+        double diff = difftime(deadlineTime, now);
+
+        tt[i].nbrj = (int)(diff / (60 * 60 * 24));
+    }
+}
+
 int main()
 {
-    // this is the main menu
     do
     {
         printf("\n**********************************\n");
@@ -440,65 +506,81 @@ int main()
         printf("9. Delete task\n");
         printf("10. Modify task\n");
         printf("11. Display tasks with deadline less 3 days\n");
+        printf("12. Remaining days to each task \n");
         printf("0. Exit\n\n");
         printf("\t\t*** Please enter your choice  : ");
         scanf("%d", &choice);
 
         switch (choice)
         {
-            case 1:
-                printf("\e[1;1H\e[2J");
-                add_task();
-                break;
-            case 2:
-                printf("\e[1;1H\e[2J");
-                adding();
-                break;
-            case 3:
-                printf("\e[1;1H\e[2J");
-                id_sorting();
-                break;
-            case 4:
-                printf("\e[1;1H\e[2J");
-                alpha_sorting();
-                break;
-            case 5:
-                printf("\e[1;1H\e[2J");
-                // searching_id();
-                break;
-            case 6:
-                printf("\e[1;1H\e[2J");
-                searching_id();
-                break;
-            case 7:
-                printf("\e[1;1H\e[2J");
-                searching_title();
-                break;
-            case 8:
-                printf("\e[1;1H\e[2J");
-                static_func();
-                break;
-            case 9:
-                printf("\e[1;1H\e[2J");
-                delete_task();
-                break;
-            case 10:
-                printf("\e[1;1H\e[2J");
-                updating_task();
-                break;
-            case 11:
-                deadline_sorting();
-                break;
-            case 0:
-                printf("\e[1;1H\e[2J");
-                printf("Exiting the program. Goodbye!\n");
-                break;
-            default:
-                printf("\e[1;1H\e[2J");
-                printf("Invalid choice. Please try again.\n");
-                break;
+        case 1:
+            printf("\e[1;1H\e[2J");
+            addTask();
+            break;
+        case 2:
+            printf("\e[1;1H\e[2J");
+            addMultipleTasks();
+            break;
+        case 3:
+            printf("\e[1;1H\e[2J");
+            sortTasksByID();
+            break;
+        case 4:
+            printf("\e[1;1H\e[2J");
+            sortTasksAlphabetically();
+            break;
+        case 5:
+            printf("\e[1;1H\e[2J");
+            deadline_sorting();
+            break;
+        case 6:
+            printf("\e[1;1H\e[2J");
+            searching_id();
+            break;
+        case 7:
+            printf("\e[1;1H\e[2J");
+            searching_title();
+            break;
+        case 8:
+            printf("\e[1;1H\e[2J");
+            static_func();
+            break;
+        case 9:
+            printf("\e[1;1H\e[2J");
+            delete_task();
+            break;
+        case 10:
+            printf("\e[1;1H\e[2J");
+            updating_task();
+            break;
+        case 11:
+            remaining_sort();
+            break;
+        case 12:
+
+            calculerNombreDeJoursRestants();
+            printf("-----------------------------------\n");
+            printf("ID\t| Nombre de jours restants |\n");
+            printf("-----------------------------------\n");
+
+            for (int i = 0; i < total; i++)
+            {
+                // Affiche les données sous forme de tableau
+                printf("%d\t| %d                       |\n", tt[i].id, tt[i].nbrj);
+            }
+            printf("-----------------------------------\n");
+            system("pause");
+            break;
+        case 0:
+            printf("\e[1;1H\e[2J");
+            printf("Exiting the program. Goodbye!\n");
+            break;
+        default:
+            printf("\e[1;1H\e[2J");
+            printf("Invalid choice. Please try again.\n");
+            break;
         }
     } while (choice != 0);
 
-return 0;
+    return 0;
 }
