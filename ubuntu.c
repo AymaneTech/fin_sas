@@ -2,20 +2,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+
 typedef struct
 {
     int id, nbrj;
 } JourRest;
-// timt_t now = time_t(NULL);
-
-// struct tm *current_time = localtime(&now);
-
-// current_time->tm_hour = 0;
-// current_time->tm_min = 0;
-// current_time->tm_sec = 0;
-
-// time_t secondes_time = mktime(&now);
-
 // creation de la structure de date;
 typedef struct
 {
@@ -34,16 +25,8 @@ typedef struct
 
 // Decalration des variables global
 task t[100];
-int choice;
-int total = 0;
-int statut_num;
-int task_num;
-int sorting_choice;
-int id_searching;
-int searching_type;
+int choice, total = 0, statut_num, task_num, sorting_choice, id_searching, id_updating, nbr_incomplet = 0, complet = 0;
 char title_searching[50];
-int id_updating;
-int nbr_incomplet = 0;
 
 // CLEAN
 // add a new task
@@ -54,12 +37,10 @@ void addTask()
     printf("\n-------------------------------| Task N %d |-------------------------------\n\n", total + 1);
 
     printf("Please enter the task title :\n\t>>>>>\t");
-    getchar();
-    gets(t[total].title);
+    scanf(" %[^\n]", t[total].title);
 
     printf("\nPlease put the task descrpion :\n\t>>>>>\t");
-    getchar();
-    gets(t[total].description);
+    scanf(" %[^\n]", t[total].description);
 
     printf("Please choose one of this status using numbers : \n");
     printf("\n\t[1]==> 'To Do' \n\t[2]==> 'Doing' \n\t[3]==> 'Done'\n");
@@ -122,14 +103,12 @@ void sortTasksByID()
     }
 }
 
-// la fonction de triage par alphabet
 void sortTasksAlphabetically()
 {
     task temp;
-
     for (int i = 0; i < total - 1; i++)
     {
-        for (int j = i; j < total - i - 1; j++)
+        for (int j = 0; j < total - i - 1; j++)
         {
             if (strcmp(t[j].title, t[j + 1].title) > 0)
             {
@@ -149,55 +128,19 @@ void sortTasksAlphabetically()
         printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
     }
 }
-
-// function to choose how it will display (sorting)
-void sorting()
-{
-    if (total != 0)
-    {
-        printf("\n\t[1] Sorted by alphabetical order \n");
-        printf("\t[3] Sorted by deadline \n");
-        printf("\t[0] Return  \n");
-
-        printf("Please Enter your choice  : ");
-        scanf("%d", &sorting_choice);
-
-        switch (sorting_choice)
-        {
-        case 1:
-            sortTasksAlphabetically();
-            break;
-        case 2:
-            sortTasksByID();
-            break;
-        case 3:
-            // remaining_sort();
-            break;
-        default:
-            printf("Invalid choice, Try again !!!\n");
-            break;
-        }
-    }
-    else
-    {
-        printf("\n\t\t\t*** The task array is empty !!! ***  \n\n");
-    }
-}
-
 // searching
 void searching_id()
 {
     int checker = 0;
     printf("Please enter Task ID to search : \t");
     scanf("%d", &id_searching);
-
     for (int i = 0; i <= total; i++)
     {
         if (id_searching == t[i].id)
         {
             checker = 1;
             printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
-            printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+            printf("| ID |     Task Title          |          Description          |  Deadline Date   |        Statut        |\n");
             printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
             printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
@@ -209,7 +152,8 @@ void searching_id()
             checker = 0;
         }
     }
-    if (checker == 0){
+    if (checker == 0)
+    {
         printf("ID doesn't exist !!! \n");
     }
 }
@@ -217,8 +161,7 @@ void searching_title()
 {
     int checker = 0;
     printf("Please enter task title to search : \t");
-    getchar();
-    gets(title_searching);
+    scanf(" %[^\n]", title_searching);
 
     printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
     printf("| ID |     Task Title          |          Description          |  Deadline Date   |        Statut        |\n");
@@ -240,7 +183,7 @@ void searching_title()
 void updating_task()
 {
     int check = 0;
-    printf("\n\n Entrez l'ID de la tache a modifier: ");
+    printf("\n\n Please enter ID to modify: ");
     scanf("%d", &id_updating);
     for (int i = 0; i <= total; i++)
     {
@@ -249,60 +192,60 @@ void updating_task()
             check = 1;
             // Affichage de la liste de tâches triée
             printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
-            printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+            printf("| ID |     Title     |          Description          |  Deadline |        Status        |\n");
             printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
             printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[i].id, t[i].title, t[i].description, t[i].deadline.year, t[i].deadline.month, t[i].deadline.day, t[i].statut);
             printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
-            printf("\tPour modifier une tache merci de remplir ces informations :\n");
+            printf("\tPlease to fill the informations to modify the task\n");
 
-            printf("Saisir le nouveau titre de tache :\n");
-            getchar();
-            gets(t[i].title);
+            printf("Enter new title :\t");
+            scanf(" %[^\n]", t[i].title);
 
-            printf("Saisir le nouveau description  :\n");
-            gets(t[i].description);
-            getchar();
+            printf("Enter new description  :\t");
+            scanf(" %[^\n]", t[i].description);
 
-            printf("\t[1]==> a realiser \n\t [2]==> en cours de realisation \n\t [3]==> finalise\n");
-            printf("Choisissez votre choix avec numero : \n");
+            printf("\t[1]==> To Do \n\t [2]==> Doing \n\t [3]==> Done\n");
+            printf("Enter your choice : \n");
             scanf("%d", &statut_num);
 
             //      cette condition remplit la variable statut ca depent le choix de l'utilisateur
             if (statut_num == 1)
             {
-                strcpy(t[i].statut, "a realiser");
+                strcpy(t[i].statut, "To Do");
             }
             else if (statut_num == 2)
             {
-                strcpy(t[i].statut, "en cours de realisation");
+                strcpy(t[i].statut, "Doing");
             }
             else if (statut_num == 3)
             {
-                strcpy(t[i].statut, "finalise");
+                strcpy(t[i].statut, "Done");
             }
             else
             {
-                printf("ce choix n'existe pas !!! \n");
+                printf("Invalid choice !!! \n");
             }
-            printf("Saisir le temps de fin de cette tache sous cette forme (jour/mois/annee):  ");
+            printf("Enter the new deadline :   ");
             scanf("%d/%d/%d", &t[i].deadline.day, &t[i].deadline.month, &t[i].deadline.year);
             break;
         }
     }
     if (check == 0)
     {
-        printf("Ce ID n'existe pas \n");
+        printf("ID doesn't exist !!!  \n");
     }
 }
 void count_status()
 {
     for (int i = 0; i <= total; i++)
     {
-        if (t[i].statut == "'To Do'" || t[i].statut == "'Doing'")
+        if (t[i].statut == "To Do" || t[i].statut == "Doing")
         {
             nbr_incomplet++;
+        }else if (t[i].statut == "Done"){
+            complet++;
         }
     }
 }
@@ -310,43 +253,14 @@ void count_status()
 // static function
 void static_func()
 {
-    printf("\n\t[1] Display number of all tasks \n");
-    printf("\n\t[2] Display tasks status\n");
-
-there: // and it will get back to again o dima koukkab
-
-    printf("\n Please enter your choice :\t");
-    scanf("%d", &choice);
-
-    switch (choice)
-    {
-    case 1:
-        if (total != 0)
-        {
-            printf("the total number of tasks is  : \t%d", total);
-        }
-        else
-        {
-            printf("No Task is complete !!! \n");
-        }
-        break;
-    case 2:
-        printf("The number of incomplete tasks is  : \t%d \n", nbr_incomplet);
-        printf("The number of complete tasks is : \t%d", (total - nbr_incomplet));
-        break;
-    default:
-
-        printf("invalid choice, Please try again !!! \n");
-        goto there;
-        break;
-    }
+    printf("The number of incomplete tasks is  : \t%d \n", nbr_incomplet);
+    printf("The number of complete tasks is : \t%d", complet);
 }
 // delete tasks
 void delete_task()
 {
     int p, q, id;
     int verifier;
-
     printf("Please enter task ID to delete : ");
     scanf("%d", &id);
 // here where the compiler gonna get back to
@@ -423,8 +337,9 @@ void deadline_sorting()
                 temp = t[j];
                 t[j] = t[j + 1];
                 t[j + 1] = temp;
-            }else if (t[j].deadline.year == t[j+1].deadline.year && t[j].deadline.month >t[j+1].deadline.month ){
-
+            }
+            else if (t[j].deadline.year == t[j + 1].deadline.year && t[j].deadline.month > t[j + 1].deadline.month)
+            {
             }
         }
     }
@@ -440,8 +355,8 @@ void deadline_sorting()
     for (int j = 0; j < total; j++)
     {
         // if (t[j].deadline.year == year && t[j].deadline.month == month && (t[j].deadline.day - day) <= 3 && (t[j].deadline.day - day) >= 0){
-            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[j].id, t[j].title, t[j].description, t[j].deadline.year, t[j].deadline.month, t[j].deadline.day, t[j].statut);
-            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[j].id, t[j].title, t[j].description, t[j].deadline.year, t[j].deadline.month, t[j].deadline.day, t[j].statut);
+        printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
         // }
     }
 }
@@ -473,8 +388,8 @@ void remainingDeadline()
 
         tt[i].nbrj = (int)(diff / (60 * 60 * 24));
     }
-    int year, month, day; 
-    
+    int year, month, day;
+
     printf("\t\tTasks have deadline before 3 days :\n");
     printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
     printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
@@ -489,8 +404,6 @@ void remainingDeadline()
         }
     }
 }
-
-
 
 int main()
 {
@@ -558,14 +471,14 @@ int main()
             updating_task();
             break;
         case 11:
-                    printf("\e[1;1H\e[2J");
+            printf("\e[1;1H\e[2J");
 
             remaining_sort();
             break;
         case 12:
-                    printf("\e[1;1H\e[2J");
+            printf("\e[1;1H\e[2J");
 
-                remainingDeadline();
+            remainingDeadline();
             break;
         case 0:
             printf("\e[1;1H\e[2J");

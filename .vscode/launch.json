@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/YCode/Desktop/fin_sas_v2",
-      "program": "c:/Users/YCode/Desktop/fin_sas_v2/build/Debug/outDebug",
+      "cwd": "c:/Users/aymane/OneDrive/Bureau/fin_sas",
+      "program": "c:/Users/aymane/OneDrive/Bureau/fin_sas/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
