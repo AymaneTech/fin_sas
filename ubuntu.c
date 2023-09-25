@@ -187,6 +187,7 @@ void sorting()
 // searching
 void searching_id()
 {
+    int checker = 0;
     printf("Please enter Task ID to search : \t");
     scanf("%d", &id_searching);
 
@@ -194,6 +195,7 @@ void searching_id()
     {
         if (id_searching == t[i].id)
         {
+            checker = 1;
             printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
             printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
             printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
@@ -204,8 +206,11 @@ void searching_id()
         }
         else
         {
-            printf("ID don't exist !!!  \n");
+            checker = 0;
         }
+    }
+    if (checker == 0){
+        printf("ID doesn't exist !!! \n");
     }
 }
 void searching_title()
@@ -214,6 +219,10 @@ void searching_title()
     printf("Please enter task title to search : \t");
     getchar();
     gets(title_searching);
+
+    printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+    printf("| ID |     Task Title          |          Description          |  Deadline Date   |        Statut        |\n");
+    printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
 
     for (int i = 0; i < total; i++)
     {
@@ -332,30 +341,6 @@ there: // and it will get back to again o dima koukkab
         break;
     }
 }
-
-// searching menu
-/*
-void searching_menu()
-{
-    printf("\t[1] Rechercher  par ID : \n");
-    printf("\t[2] Rechercher  par Deadline :\n");
-    printf("Entrez votre choix :: ");
-    scanf("%d", &searching_type);
-
-    switch (searching_type)
-    {
-    case 1:
-        searching_id();
-        break;
-    case 2:
-        searching_title();
-        break;
-    default:
-        printf("Ce choix n'existe pas\n");
-        break;
-    }
-}*/
-
 // delete tasks
 void delete_task()
 {
@@ -431,14 +416,15 @@ void deadline_sorting()
     task temp;
     for (int i = 0; i < total - 1; i++)
     {
-        for (int j = 0; j < i - 1; j++)
+        for (int j = 0; j < total - i - 1; j++)
         {
             if (t[j].deadline.year > t[j + 1].deadline.year)
             {
-
                 temp = t[j];
                 t[j] = t[j + 1];
                 t[j + 1] = temp;
+            }else if (t[j].deadline.year == t[j+1].deadline.year && t[j].deadline.month >t[j+1].deadline.month ){
+
             }
         }
     }
@@ -446,23 +432,25 @@ void deadline_sorting()
     printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
     printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
     printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+
+    int year = 0;
+    int month = 0;
+    int day = 0;
+
     for (int j = 0; j < total; j++)
     {
-        if (t[j].deadline.year == year && t[j].deadline.month == month && (t[j].deadline.day - day) <= 3 && (t[j].deadline.day - day) >= 0)
-        {
-
+        // if (t[j].deadline.year == year && t[j].deadline.month == month && (t[j].deadline.day - day) <= 3 && (t[j].deadline.day - day) >= 0){
             printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", t[j].id, t[j].title, t[j].description, t[j].deadline.year, t[j].deadline.month, t[j].deadline.day, t[j].statut);
             printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
-        }
+        // }
     }
 }
-// Afficher le nombre de jours restants jusqu'au délai de chaque tâche
+
 JourRest tt[100];
-void calculerNombreDeJoursRestants()
+void remainingDeadline()
 {
     int i;
 
-    // Obtenir la date actuelle
     time_t now;
     struct tm *timeinfo;
     time(&now);
@@ -472,7 +460,6 @@ void calculerNombreDeJoursRestants()
     {
         tt[i].id = t[i].id;
 
-        // Calculer le nombre de jours restants pour la tâche actuelle
         struct tm deadline;
         deadline.tm_year = t[i].deadline.year - 1900;
         deadline.tm_mon = t[i].deadline.month - 1;
@@ -486,7 +473,24 @@ void calculerNombreDeJoursRestants()
 
         tt[i].nbrj = (int)(diff / (60 * 60 * 24));
     }
+    int year, month, day; 
+    
+    printf("\t\tTasks have deadline before 3 days :\n");
+    printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+    printf("| ID |     Nom de la tâche     |          Description          |  Date d'échéance |        Statut        |\n");
+    printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+
+    for (int j = 0; j < total; j++)
+    {
+        if (tt[j].nbrj <= 3 && tt[j].nbrj >= 0)
+        {
+            printf("| %-2d | %-25s | %-31s | %04d-%02d-%02d | %-23s |\n", tt[j].id, t[j].title, t[j].description, t[j].deadline.year, t[j].deadline.month, t[j].deadline.day, t[j].statut);
+            printf("+----+-------------------------+-------------------------------+------------------+----------------------+\n");
+        }
+    }
 }
+
+
 
 int main()
 {
@@ -554,22 +558,14 @@ int main()
             updating_task();
             break;
         case 11:
+                    printf("\e[1;1H\e[2J");
+
             remaining_sort();
             break;
         case 12:
+                    printf("\e[1;1H\e[2J");
 
-            calculerNombreDeJoursRestants();
-            printf("-----------------------------------\n");
-            printf("ID\t| Nombre de jours restants |\n");
-            printf("-----------------------------------\n");
-
-            for (int i = 0; i < total; i++)
-            {
-                // Affiche les données sous forme de tableau
-                printf("%d\t| %d                       |\n", tt[i].id, tt[i].nbrj);
-            }
-            printf("-----------------------------------\n");
-            system("pause");
+                remainingDeadline();
             break;
         case 0:
             printf("\e[1;1H\e[2J");
